@@ -18,7 +18,7 @@ url = config.get('webhook', 'url')
 def show_usage():
     print '\nNormal webhook usage: ' + sys.argv[0] + ' --action [new|merged|abandoned] --change <change id> --commit <git hash> --change-url <url to change>'
 
-def fire_webhook(action, id, commit, commitUrl, who, branch, project):
+def fire_webhook(action, id, commit, commitUrl, who, branch, patchset, project):
     payload = {
         'action': action,
         'id': id,
@@ -26,6 +26,7 @@ def fire_webhook(action, id, commit, commitUrl, who, branch, project):
         'url': commitUrl,
         'user': who,
         'branch': branch,
+        'patchset': patchset,
         'project': project
     }
     headers = {'content-type': 'application/json'}
@@ -50,10 +51,11 @@ def main():
         elif o == '--submitter': who = a
         elif o == '--abandoner': who = a
         elif o == '--branch': branch = a
+        elif o == '--patchset': patchset = a
         elif o == '--project': project = a
 
     if (len(commit) > 0 and len(id) > 0):
-        fire_webhook(action, id, commit, commitUrl, who, branch, project)
+        fire_webhook(action, id, commit, commitUrl, who, branch, patchset, project)
     else:
         show_usage()
         
